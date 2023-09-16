@@ -1,0 +1,31 @@
+name: Node.js test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    timeout-minutes: 20
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node: ["16", "18", "19"]
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          always-auth: true
+          node-version: ${{ matrix.node }}
+          cache: "npm"
+
+      - name: Install dependencies if needed
+        run: npm install
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Unit Testing
+        run: npm test
